@@ -1,0 +1,10 @@
+{
+ "models": ["ecmwf_ifs", "icon_seamless", "meteofrance_seamless", "gfs_seamless", "ukmo_seamless"],
+ "alert_24h_cm": 20,
+ "alert_72h_cm": 40,
+ "realert_days": 4,
+ "regrow_factor": 1.5,
+ "regrow_cm": 15,
+ "quiet_hours": [23, 7],
+ "max_lines": 8
+}
