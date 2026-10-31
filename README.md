@@ -34,7 +34,12 @@ python -m unittest discover backend
 
 Telegram: put `TELEGRAM_BOT_TOKEN=` and `TELEGRAM_CHAT_ID=` in `backend/.env` locally, and the
 same two names as repository secrets for Actions. `--telegram-chat-id` lists the chats that
-have messaged the bot; `--telegram-test` sends a test message.
+have messaged the bot; `--telegram-test` sends a test message. To test the Actions side:
+`gh workflow run update.yml -f telegram_test=true`.
+
+On Windows, Telegram calls can fail with `CERTIFICATE_VERIFY_FAILED` because Telegram sends the
+GoDaddy Root G2 certificate, which the local Windows store may not have fetched yet. Point Python
+at a full CA bundle, e.g. Git's: `SSL_CERT_FILE="C:/Program Files/Git/mingw64/etc/ssl/certs/ca-bundle.crt"`.
 
 ## Data
 

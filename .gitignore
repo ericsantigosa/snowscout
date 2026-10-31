@@ -1,5 +1,5 @@
 __pycache__/
-backend/.env
+.env
 site/
 # local planning notes (personal details stay off the public repo)
 PLAN.md

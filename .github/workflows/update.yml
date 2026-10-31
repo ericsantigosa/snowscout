@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "17 */2 * * *"   # every 2 h (UTC); GitHub may start it late under load
   workflow_dispatch:
+    inputs:
+      telegram_test:
+        description: "Only send a Telegram test message"
+        type: boolean
+        default: false
 
 permissions:
   contents: write   # push data to gh-pages
@@ -13,7 +18,20 @@ concurrency:
   group: update
 
 jobs:
+  telegram-test:
+    if: ${{ inputs.telegram_test }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Send a test message
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python3 backend/snowscout.py --telegram-test
+
   update:
+    if: ${{ !inputs.telegram_test }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
