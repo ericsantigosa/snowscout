@@ -61,6 +61,17 @@ pebble install build/watch.pbw --adb                 # phone on USB
 pebble install build/watch.pbw --emulator emery --vnc
 ```
 
+## Watchface (`watchface/`)
+
+Time and date over a 7-day strip of the biggest daily snowfall at any resort (today
+highlighted), the 72 h leader, and the first day with 10 cm or more somewhere. The phone side
+sends a small summary when the face starts and every 30 minutes; the bottom line turns into a
+red "data N h old" warning when the backend data is more than 6 h old.
+
+```
+cd watchface && pebble build && pebble install build/watchface.pbw --adb
+```
+
 ## Data
 
 Weather data by [Open-Meteo.com](https://open-meteo.com/) (CC BY 4.0). Resort areas and

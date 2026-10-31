@@ -1,0 +1,22 @@
+{
+  "name": "snowscout-face",
+  "author": "Eric Santigosa",
+  "version": "0.1.0",
+  "keywords": ["pebble-app"],
+  "private": true,
+  "dependencies": {},
+  "pebble": {
+    "displayName": "Snowscout Face",
+    "uuid": "1b83faa9-81e9-4f83-9a2e-5fd29b7302cc",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": ["emery"],
+    "watchapp": {
+      "watchface": true
+    },
+    "messageKeys": ["TIME", "DAY0", "WEEK", "LINE_A", "LINE_B", "REFRESH"],
+    "resources": {
+      "media": []
+    }
+  }
+}
