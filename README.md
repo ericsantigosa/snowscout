@@ -22,7 +22,7 @@ built for a Pebble Time 2.
            "d": [7],         daily totals, today first (cm)
            "sd",             modelled snow depth (cm)
            "tmin", "fl",     min temp next 24 h (°C), freezing level now (m)
-           "cam" } ] }
+           "cam" } ] }       webcam still URL or null (fetched by the phone, never re-hosted)
 ```
 
 ## Local use

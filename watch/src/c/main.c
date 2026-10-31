@@ -1,4 +1,5 @@
 #include <pebble.h>
+#include "cam.h"
 #include "data.h"
 #include "detail.h"
 
@@ -155,6 +156,9 @@ static void select_long_click(MenuLayer *menu, MenuIndex *index, void *ctx) {
 }
 
 static void inbox_received(DictionaryIterator *iter, void *ctx) {
+  if (cam_handle_message(iter)) {
+    return;
+  }
   Tuple *blob = dict_find(iter, MESSAGE_KEY_BLOB);
   Tuple *updated = dict_find(iter, MESSAGE_KEY_TIME);
   Tuple *day0 = dict_find(iter, MESSAGE_KEY_DAY0);
@@ -245,6 +249,7 @@ static void init(void) {
 
 static void deinit(void) {
   tick_timer_service_unsubscribe();
+  cam_deinit();
   detail_deinit();
   window_destroy(s_window);
 }

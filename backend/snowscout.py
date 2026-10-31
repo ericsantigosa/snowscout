@@ -163,7 +163,7 @@ def resort_row(resort, loc, models, now):
         "sd": rnd(sd * 100) if sd is not None else None,
         "d": [rnd(med(p["d"][k] for p in per.values())) for k in range(7)],
         "tmin": rnd(cons("tmin")), "fl": rnd(cons("fl"), -1),
-        "cam": 0,
+        "cam": resort.get("cam"),  # webcam still URL; the phone fetches it directly
     }
     archive = {m: {k: (round(v, 1) if isinstance(v, float) else
                        [None if x is None else round(x, 1) for x in v] if isinstance(v, list) else v)

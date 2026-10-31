@@ -1,4 +1,5 @@
 #include "detail.h"
+#include "cam.h"
 #include "data.h"
 
 #define BAND_H 50
@@ -64,8 +65,16 @@ static void draw(Layer *layer, GContext *ctx) {
 
   graphics_context_set_fill_color(ctx, GColorOxfordBlue);
   graphics_fill_rect(ctx, GRect(0, 0, w, BAND_H), 0, GCornerNone);
+  int name_w = w - 12;
+  if (r->has_cam) {  // tag: Select opens the webcam
+    name_w -= 40;
+    graphics_context_set_fill_color(ctx, GColorVividCerulean);
+    graphics_fill_rect(ctx, GRect(w - 42, 6, 36, 18), 4, GCornersAll);
+    graphics_context_set_text_color(ctx, GColorOxfordBlue);
+    text(ctx, "cam", FONT_KEY_GOTHIC_14_BOLD, GRect(w - 42, 6, 36, 16), GTextAlignmentCenter);
+  }
   graphics_context_set_text_color(ctx, GColorWhite);
-  text(ctx, r->name, FONT_KEY_GOTHIC_24_BOLD, GRect(6, -2, w - 12, 28), GTextAlignmentLeft);
+  text(ctx, r->name, FONT_KEY_GOTHIC_24_BOLD, GRect(6, -2, name_w, 28), GTextAlignmentLeft);
   if (r->drv != NO_DATA) {
     snprintf(buf, sizeof(buf), "%d m · %s · %dh%02d drive", r->alt, snow_region_name(r->region),
              r->drv / 60, r->drv % 60);
@@ -122,9 +131,17 @@ static void down_click(ClickRecognizerRef rec, void *ctx) {
   }
 }
 
+static void select_click(ClickRecognizerRef rec, void *ctx) {
+  const Resort *r = &g_snow.resorts[g_snow.order[s_pos]];
+  if (r->has_cam) {
+    cam_push(g_snow.order[s_pos], r->name);
+  }
+}
+
 static void click_config(void *ctx) {
   window_single_repeating_click_subscribe(BUTTON_ID_UP, 150, up_click);
   window_single_repeating_click_subscribe(BUTTON_ID_DOWN, 150, down_click);
+  window_single_click_subscribe(BUTTON_ID_SELECT, select_click);
 }
 
 static void window_load(Window *window) {

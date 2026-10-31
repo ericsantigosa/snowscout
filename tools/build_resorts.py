@@ -101,9 +101,17 @@ def main():
         raise SystemExit(f"not found in dump: {missing}")
 
     resorts = [found[v[0]] for v in PICK.values()]
+    # webcam URLs are curated by hand in the existing file; keep them
+    try:
+        with open(a.out, encoding="utf-8") as fh:
+            cams = {r["id"]: r["cam"] for r in json.load(fh) if r.get("cam")}
+    except FileNotFoundError:
+        cams = {}
     for r, m in zip(resorts, drive_minutes(home, resorts)):
         del r["_km"]
         r["drv"] = m
+        if r["id"] in cams:
+            r["cam"] = cams[r["id"]]
     with open(a.out, "w", encoding="utf-8") as fh:
         json.dump(resorts, fh, ensure_ascii=False, indent=1)
     for r in resorts:

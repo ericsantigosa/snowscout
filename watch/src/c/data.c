@@ -23,6 +23,7 @@ static void parse(void) {
     r->name[NAME_BYTES] = '\0';
     r->region = p[16] & 0x03;
     r->favourite = p[16] & 0x80;
+    r->has_cam = p[16] & 0x40;
     r->tmin = (int8_t)p[17];
     r->alt = rd16(p + 18);
     r->drv = rd16(p + 20);

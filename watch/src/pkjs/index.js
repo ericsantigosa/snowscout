@@ -1,7 +1,9 @@
 // Snowscout phone side: fetch data.json from GitHub Pages, pack it into one byte blob for the
-// watch, and run the Clay settings page (favourites, hidden resorts, first board).
+// watch, run the Clay settings page (favourites, hidden resorts, first board), and fetch and
+// convert webcam stills on request.
 var Clay = require('pebble-clay');
 var buildConfig = require('./config');
+var cam = require('./cam');
 
 var DATA_URL = 'https://ericsantigosa.github.io/snowscout/data.json';
 
@@ -10,6 +12,16 @@ var REC_SIZE = 50;
 var NAME_BYTES = 16;
 var NO_DATA = -32768;
 var REGION = { CAT: 0, AND: 1, FR: 2 };
+var FLAG_CAM = 0x40;
+var FLAG_FAV = 0x80;
+
+// Webcam image size and transfer chunk; must fit CAM_W/CAM_H and the inbox in src/c/main.c
+var CAM_W = 200;
+var CAM_H = 120;
+var CAM_CHUNK = 2000;
+
+var sentRows = [];  // resorts in the order last sent to the watch; CAM_REQ indexes into it
+var camRequest = 0; // id of the newest webcam request; older ones stop sending
 
 // Clay only registers the components used by the config it is constructed with, so build it
 // with a one-resort config (every component type); the real list is set in showConfiguration.
@@ -73,7 +85,7 @@ function pack(data, p) {
     for (var j = 0; j < name.length; j++) {
       buf[off + j] = name[j];
     }
-    buf[off + 16] = (REGION[r.reg] || 0) | (p.fav.indexOf(r.id) >= 0 ? 0x80 : 0);
+    buf[off + 16] = (REGION[r.reg] || 0) | (r.cam ? FLAG_CAM : 0) | (p.fav.indexOf(r.id) >= 0 ? FLAG_FAV : 0);
     buf[off + 17] = (r.tmin === null || r.tmin === undefined) ? 0x80 : (r.tmin & 0xFF);
     put16(buf, off + 18, r.alt);
     put16(buf, off + 20, r.drv);
@@ -88,7 +100,66 @@ function pack(data, p) {
       put16(buf, off + 36 + 2 * d, r.d[d]);
     }
   });
+  sentRows = rows;
   return { BLOB: buf, TIME: data.t, DAY0: data.d0, COUNT: rows.length };
+}
+
+function camError(why) {
+  console.log('snowscout: webcam failed: ' + why);
+  send({ CAM_ERR: why });
+}
+
+// Send the converted image: header first, then CAM_CHUNK-byte slices, each after the previous ack
+function sendCam(id, img, taken) {
+  var header = {
+    CAM_W: img.width,
+    CAM_H: img.height,
+    CAM_PAL: img.palette,
+    CAM_TIME: taken,
+    CAM_LEN: img.data.length
+  };
+  var next = function (offset) {
+    if (id !== camRequest || offset >= img.data.length) {
+      return;
+    }
+    var end = Math.min(offset + CAM_CHUNK, img.data.length);
+    Pebble.sendAppMessage({
+      CAM_OFF: offset,
+      CAM_DATA: Array.prototype.slice.call(img.data, offset, end)
+    }, function () { next(end); }, function () { camError('transfer failed'); });
+  };
+  Pebble.sendAppMessage(header, function () { next(0); }, function () { camError('transfer failed'); });
+}
+
+function fetchCam(index) {
+  var r = sentRows[index];
+  if (!r || !r.cam) {
+    return camError('no webcam');
+  }
+  var id = ++camRequest;
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', r.cam + (r.cam.indexOf('?') < 0 ? '?' : '&') + 't=' + Date.now(), true);
+  xhr.responseType = 'arraybuffer';
+  xhr.timeout = 30000;
+  xhr.onload = function () {
+    if (id !== camRequest) {
+      return;
+    }
+    if (xhr.status !== 200 || !xhr.response) {
+      return camError('HTTP ' + xhr.status);
+    }
+    var img;
+    try {
+      img = cam.convert(xhr.response, CAM_W, CAM_H);
+    } catch (e) {
+      return camError('not a JPEG');
+    }
+    var modified = Date.parse(xhr.getResponseHeader('Last-Modified') || '');
+    sendCam(id, img, isNaN(modified) ? 0 : Math.round(modified / 1000));
+  };
+  xhr.onerror = function () { camError('no connection'); };
+  xhr.ontimeout = function () { camError('timed out'); };
+  xhr.send();
 }
 
 function send(msg, tries) {
@@ -128,6 +199,12 @@ function refresh() {
 }
 
 Pebble.addEventListener('ready', refresh);
+
+Pebble.addEventListener('appmessage', function (e) {
+  if (e.payload && e.payload.CAM_REQ !== undefined) {
+    fetchCam(e.payload.CAM_REQ);
+  }
+});
 
 Pebble.addEventListener('showConfiguration', function () {
   var data = loadJSON('snowscout-data', null);

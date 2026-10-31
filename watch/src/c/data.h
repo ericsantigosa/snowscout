@@ -14,6 +14,7 @@ typedef struct {
   char name[NAME_BYTES + 1];
   uint8_t region;                         // 0 Catalonia, 1 Andorra, 2 France
   bool favourite;
+  bool has_cam;                           // the phone knows a webcam URL for it
   int8_t tmin;                            // min temp next 24 h, INT8_MIN = no data
   int16_t alt, drv;                       // mid-mountain altitude (m), drive (min)
   int16_t f48, c72, lo, hi, m24, sd, fl;  // cm (fl in m), NO_DATA when missing
