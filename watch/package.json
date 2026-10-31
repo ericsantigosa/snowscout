@@ -1,0 +1,32 @@
+{
+  "name": "snowscout",
+  "author": "Eric Santigosa",
+  "version": "0.1.0",
+  "keywords": ["pebble-app"],
+  "private": true,
+  "dependencies": {
+    "pebble-clay": "^1.0.4"
+  },
+  "pebble": {
+    "displayName": "Snowscout",
+    "uuid": "643c996c-7022-4576-9ecb-ac537f5ba0e8",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": ["emery"],
+    "watchapp": {
+      "watchface": false
+    },
+    "capabilities": ["configurable"],
+    "messageKeys": ["BLOB", "TIME", "DAY0", "COUNT", "STATUS", "DEFAULT_BOARD", "FAV", "HIDE"],
+    "resources": {
+      "media": [
+        {
+          "type": "bitmap",
+          "name": "IMAGE_MENU_ICON",
+          "file": "images/menu_icon.png",
+          "menuIcon": true
+        }
+      ]
+    }
+  }
+}

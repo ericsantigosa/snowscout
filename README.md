@@ -41,6 +41,26 @@ On Windows, Telegram calls can fail with `CERTIFICATE_VERIFY_FAILED` because Tel
 GoDaddy Root G2 certificate, which the local Windows store may not have fetched yet. Point Python
 at a full CA bundle, e.g. Git's: `SSL_CERT_FILE="C:/Program Files/Git/mingw64/etc/ssl/certs/ca-bundle.crt"`.
 
+## Watch app (`watch/`)
+
+Pebble Time 2 (`emery`) watchapp. The phone side (`src/pkjs`) fetches `data.json`, packs it into
+one 50-byte-per-resort blob and sends it to the watch, which caches it in persistent storage.
+
+- **Boards**: Next 72 h · Fresh 48 h · Snow depth. Select on the header row (or a long press
+  anywhere) switches board.
+- **Detail**: Select on a resort shows 7-day snowfall bars, the 72 h model range, depth,
+  min temperature and freezing level; Up/Down step through the board.
+- **Settings** (gear in the Pebble phone app, built with Clay): first board, favourites (pinned
+  on top), hidden resorts.
+
+Build and install from WSL (setup: `tools/wsl_*.sh`):
+
+```
+cd watch && pebble build
+pebble install build/watch.pbw --adb                 # phone on USB
+pebble install build/watch.pbw --emulator emery --vnc
+```
+
 ## Data
 
 Weather data by [Open-Meteo.com](https://open-meteo.com/) (CC BY 4.0). Resort areas and
