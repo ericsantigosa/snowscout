@@ -11,7 +11,9 @@ var NAME_BYTES = 16;
 var NO_DATA = -32768;
 var REGION = { CAT: 0, AND: 1, FR: 2 };
 
-var clay = new Clay([], null, { autoHandleEvents: false });
+// Clay only registers the components used by the config it is constructed with, so build it
+// with a one-resort config (every component type); the real list is set in showConfiguration.
+var clay = new Clay(buildConfig([{ id: '', n: '', reg: '' }]), null, { autoHandleEvents: false });
 
 function loadJSON(key, fallback) {
   try {
