@@ -2,7 +2,9 @@ name: update
 
 on:
   schedule:
-    - cron: "17 */2 * * *"   # every 2 h (UTC); GitHub may start it late under load
+    # every 30 min at odd minutes: GitHub drops many scheduled runs under load (on 2026-10-31
+    # only 2 of ~5 two-hourly slots ran overnight), so try often and let the drops thin it out
+    - cron: "7,37 * * * *"
   workflow_dispatch:
     inputs:
       telegram_test:
