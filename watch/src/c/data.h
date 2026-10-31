@@ -2,13 +2,16 @@
 #include <pebble.h>
 
 // One resort record as packed by src/pkjs/index.js (pack)
-#define REC_SIZE 50
+#define REC_SIZE 66
 #define NAME_BYTES 16
 #define MAX_RESORTS 40
 #define DAYS 7
 #define NO_DATA INT16_MIN
+#define NO_COUNT 0xFF
+#define COLOURS 4                         // green, blue, red, black
 
-typedef enum { BOARD_NEXT72, BOARD_FRESH48, BOARD_DEPTH, BOARD_COUNT } Board;
+typedef enum { BOARD_NEXT72, BOARD_FRESH48, BOARD_DEPTH, BOARD_OPEN, BOARD_COUNT } Board;
+typedef enum { REP_NONE, REP_OPEN, REP_CLOSED } ReportState;
 
 typedef struct {
   char name[NAME_BYTES + 1];
@@ -19,6 +22,11 @@ typedef struct {
   int16_t alt, drv;                       // mid-mountain altitude (m), drive (min)
   int16_t f48, c72, lo, hi, m24, sd, fl;  // cm (fl in m), NO_DATA when missing
   int16_t daily[DAYS];                    // cm per local day; daily[0] starts at day0
+  int8_t av;                              // avalanche danger 1-5, 0 = no snow, -1 = no rating
+  uint8_t rep;                            // ReportState of the official snow report
+  uint8_t lifts[2], slopes[2];            // open, total; NO_COUNT when unknown
+  uint8_t col[COLOURS][2];                // slopes per colour: open, total
+  uint16_t opens;                         // opening day (days since 1970-01-01), 0 = unknown
 } Resort;
 
 typedef struct {

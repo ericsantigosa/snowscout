@@ -15,6 +15,16 @@ static void text(GContext *ctx, const char *s, const char *font_key, GRect box, 
                      GTextOverflowModeTrailingEllipsis, align, NULL);
 }
 
+static GColor danger_colour(int level) {
+  switch (level) {
+    case 1: return GColorInchworm;
+    case 2: return GColorYellow;
+    case 3: return GColorOrange;
+    case 4: return GColorRed;
+    default: return GColorBlack;
+  }
+}
+
 static void draw_bars(GContext *ctx, const Resort *r, GRect area) {
   static const char *weekdays[] = {"Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"};
   int base = area.origin.y + area.size.h - LABEL_H;  // bar baseline; day names below it
@@ -65,16 +75,31 @@ static void draw(Layer *layer, GContext *ctx) {
 
   graphics_context_set_fill_color(ctx, GColorOxfordBlue);
   graphics_fill_rect(ctx, GRect(0, 0, w, BAND_H), 0, GCornerNone);
-  int name_w = w - 12;
-  if (r->has_cam) {  // tag: Select opens the webcam
-    name_w -= 40;
+  int tag_x = w - 6;  // header tags, laid out right to left
+  if (r->has_cam) {   // Select opens the webcam
+    tag_x -= 36;
     graphics_context_set_fill_color(ctx, GColorVividCerulean);
-    graphics_fill_rect(ctx, GRect(w - 42, 6, 36, 18), 4, GCornersAll);
+    graphics_fill_rect(ctx, GRect(tag_x, 6, 36, 18), 4, GCornersAll);
     graphics_context_set_text_color(ctx, GColorOxfordBlue);
-    text(ctx, "cam", FONT_KEY_GOTHIC_14_BOLD, GRect(w - 42, 6, 36, 16), GTextAlignmentCenter);
+    text(ctx, "cam", FONT_KEY_GOTHIC_14_BOLD, GRect(tag_x, 6, 36, 16), GTextAlignmentCenter);
+    tag_x -= 4;
+  }
+  if (r->av >= 1) {   // avalanche danger, European scale colours
+    tag_x -= 20;
+    graphics_context_set_fill_color(ctx, danger_colour(r->av));
+    graphics_fill_rect(ctx, GRect(tag_x, 6, 20, 18), 4, GCornersAll);
+    if (r->av >= 5) {
+      graphics_context_set_stroke_color(ctx, GColorRed);
+      graphics_draw_round_rect(ctx, GRect(tag_x, 6, 20, 18), 4);
+    }
+    char level[4];
+    snprintf(level, sizeof(level), "%d", r->av);
+    graphics_context_set_text_color(ctx, r->av >= 4 ? GColorWhite : GColorBlack);
+    text(ctx, level, FONT_KEY_GOTHIC_14_BOLD, GRect(tag_x, 6, 20, 16), GTextAlignmentCenter);
+    tag_x -= 4;
   }
   graphics_context_set_text_color(ctx, GColorWhite);
-  text(ctx, r->name, FONT_KEY_GOTHIC_24_BOLD, GRect(6, -2, name_w, 28), GTextAlignmentLeft);
+  text(ctx, r->name, FONT_KEY_GOTHIC_24_BOLD, GRect(6, -2, tag_x - 8, 28), GTextAlignmentLeft);
   if (r->drv != NO_DATA) {
     snprintf(buf, sizeof(buf), "%d m · %s · %dh%02d drive", r->alt, snow_region_name(r->region),
              r->drv / 60, r->drv % 60);

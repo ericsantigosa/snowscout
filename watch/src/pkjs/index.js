@@ -8,7 +8,9 @@ var cam = require('./cam');
 var DATA_URL = 'https://ericsantigosa.github.io/snowscout/data.json';
 
 // Wire format of one resort; must match REC_SIZE and the offsets in src/c/data.c
-var REC_SIZE = 50;
+var REC_SIZE = 66;
+var NO_COUNT = 0xFF;
+var REP_NONE = 0, REP_OPEN = 1, REP_CLOSED = 2;
 var NAME_BYTES = 16;
 var NO_DATA = -32768;
 var REGION = { CAT: 0, AND: 1, FR: 2 };
@@ -73,6 +75,30 @@ function put16(buf, offset, value) {
   buf[offset + 1] = value >> 8;
 }
 
+function put8(buf, offset, value) {
+  buf[offset] = (value === null || value === undefined) ? NO_COUNT : Math.max(0, Math.min(254, value));
+}
+
+function putPair(buf, offset, pair) {
+  put8(buf, offset, pair ? pair[0] : null);
+  put8(buf, offset + 1, pair ? pair[1] : null);
+}
+
+// official report and avalanche level: bytes 50-65
+function packExtras(buf, off, r) {
+  var rep = r.rep;
+  put8(buf, off + 50, r.av);
+  buf[off + 51] = !rep ? REP_NONE : (rep.open ? REP_OPEN : REP_CLOSED);
+  putPair(buf, off + 52, rep && rep.lifts);
+  putPair(buf, off + 54, rep && rep.slopes);
+  'gbrk'.split('').forEach(function (c, i) {
+    putPair(buf, off + 56 + 2 * i, rep && rep.col && rep.col[c]);
+  });
+  var opens = rep && rep.opens ? Math.round(Date.parse(rep.opens + 'T00:00:00Z') / 86400000) : 0;
+  buf[off + 64] = (opens || 0) & 0xFF;
+  buf[off + 65] = ((opens || 0) >> 8) & 0xFF;
+}
+
 function pack(data, p) {
   var rows = data.r.filter(function (r) { return p.hide.indexOf(r.id) < 0; });
   var buf = [];
@@ -99,6 +125,7 @@ function pack(data, p) {
     for (var d = 0; d < 7; d++) {
       put16(buf, off + 36 + 2 * d, r.d[d]);
     }
+    packExtras(buf, off, r);
   });
   sentRows = rows;
   return { BLOB: buf, TIME: data.t, DAY0: data.d0, COUNT: rows.length };

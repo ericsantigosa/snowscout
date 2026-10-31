@@ -9,7 +9,16 @@
   "top": 2600,
   "alt": 2050,
   "drv": 242,
-  "cam": "https://app.projecte4estacions.com/snapshots/peulla.jpg"
+  "cam": "https://app.projecte4estacions.com/snapshots/peulla.jpg",
+  "av": [
+   "ES-CT-L-01",
+   "ES-CT-PA"
+  ],
+  "rep": {
+   "src": "ots",
+   "id": "spain/baqueira-beret"
+  },
+  "ots": "baqueira-beret"
  },
  {
   "id": "boi",
@@ -21,7 +30,15 @@
   "top": 2747,
   "alt": 2390,
   "drv": 226,
-  "cam": "https://app.projecte4estacions.com/snapshots/boi-taull-mulleres.jpg"
+  "cam": "https://app.projecte4estacions.com/snapshots/boi-taull-mulleres.jpg",
+  "av": [
+   "ES-CT-RF"
+  ],
+  "rep": {
+   "src": "pirineu365",
+   "id": 20
+  },
+  "ots": "boi-tauell"
  },
  {
   "id": "pai",
@@ -33,7 +50,15 @@
   "top": 2424,
   "alt": 2050,
   "drv": 217,
-  "cam": "https://media.turismefgc.cat/portaine/port-aine-hd.jpg"
+  "cam": "https://media.turismefgc.cat/portaine/port-aine-hd.jpg",
+  "av": [
+   "ES-CT-PA"
+  ],
+  "rep": {
+   "src": "pirineu365",
+   "id": 19
+  },
+  "ots": "port-aine"
  },
  {
   "id": "esp",
@@ -45,7 +70,15 @@
   "top": 2290,
   "alt": 1900,
   "drv": 226,
-  "cam": "https://media.turismefgc.cat/espot/espot-esqui-hd.jpg"
+  "cam": "https://media.turismefgc.cat/espot/espot-esqui-hd.jpg",
+  "av": [
+   "ES-CT-PA"
+  ],
+  "rep": {
+   "src": "pirineu365",
+   "id": 18
+  },
+  "ots": "espot-esqui"
  },
  {
   "id": "tav",
@@ -56,7 +89,16 @@
   "base": 1711,
   "top": 2196,
   "alt": 1950,
-  "drv": 239
+  "drv": 239,
+  "av": [
+   "ES-CT-PA",
+   "ES-CT-L-04"
+  ],
+  "rep": {
+   "src": "ots",
+   "id": "spain/tavascan-pleta-del-prat"
+  },
+  "ots": "tavascan-pleta-del-prat"
  },
  {
   "id": "pdc",
@@ -68,7 +110,15 @@
   "top": 2122,
   "alt": 1930,
   "drv": 112,
-  "cam": "https://app.projecte4estacions.com/snapshots/portdelcomte1.jpg"
+  "cam": "https://app.projecte4estacions.com/snapshots/portdelcomte1.jpg",
+  "av": [
+   "ES-CT-PR"
+  ],
+  "rep": {
+   "src": "ots",
+   "id": "spain/port-del-comte"
+  },
+  "ots": "port-del-comte"
  },
  {
   "id": "mol",
@@ -80,7 +130,15 @@
   "top": 2518,
   "alt": 2090,
   "drv": 117,
-  "cam": "https://media.turismefgc.cat/lamolina/plcomercial.jpg"
+  "cam": "https://media.turismefgc.cat/lamolina/plcomercial.jpg",
+  "av": [
+   "ES-CT-VN"
+  ],
+  "rep": {
+   "src": "pirineu365",
+   "id": 15
+  },
+  "ots": "la-molina"
  },
  {
   "id": "mas",
@@ -92,7 +150,15 @@
   "top": 2509,
   "alt": 2060,
   "drv": 114,
-  "cam": "https://www.masella.com/cam1/mini/tosa2500tmp.jpg"
+  "cam": "https://www.masella.com/cam1/mini/tosa2500tmp.jpg",
+  "av": [
+   "ES-CT-VN"
+  ],
+  "rep": {
+   "src": "ots",
+   "id": "spain/masella"
+  },
+  "ots": "masella"
  },
  {
   "id": "vlt",
@@ -104,7 +170,15 @@
   "top": 2495,
   "alt": 2250,
   "drv": 143,
-  "cam": "https://storage.roundshot.com/5ee24085e2f5c2.07690483/vallter-2000-1920x1080.jpg"
+  "cam": "https://storage.roundshot.com/5ee24085e2f5c2.07690483/vallter-2000-1920x1080.jpg",
+  "av": [
+   "ES-CT-TF"
+  ],
+  "rep": {
+   "src": "pirineu365",
+   "id": 17
+  },
+  "ots": "vallter-2000"
  },
  {
   "id": "nur",
@@ -116,7 +190,15 @@
   "top": 2259,
   "alt": 2110,
   "drv": 153,
-  "cam": "https://media.turismefgc.cat/valldenuria/nuriabarques.jpg"
+  "cam": "https://media.turismefgc.cat/valldenuria/nuriabarques.jpg",
+  "av": [
+   "ES-CT-TF"
+  ],
+  "rep": {
+   "src": "pirineu365",
+   "id": 16
+  },
+  "ots": "vall-de-nuria"
  },
  {
   "id": "gv",
@@ -128,7 +210,15 @@
   "top": 2619,
   "alt": 2150,
   "drv": 195,
-  "cam": "https://wtvpict.feratel.com/picture/38/15060.jpeg"
+  "cam": "https://wtvpict.feratel.com/picture/38/15060.jpeg",
+  "av": [
+   "AD-01"
+  ],
+  "rep": {
+   "src": "grandvalira",
+   "url": "https://www.grandvalira.com/ca/estacio/estat-de-pistes"
+  },
+  "ots": "grandvalira"
  },
  {
   "id": "pal",
@@ -140,7 +230,15 @@
   "top": 2541,
   "alt": 2050,
   "drv": 168,
-  "cam": "https://wtvpict.feratel.com/picture/38/15085.jpeg"
+  "cam": "https://wtvpict.feratel.com/picture/38/15085.jpeg",
+  "av": [
+   "AD-02"
+  ],
+  "rep": {
+   "src": "grandvalira",
+   "url": "https://www.palarinsal.com/ca/estacio/comunicat-neu"
+  },
+  "ots": "vallnord-pal-arinsal"
  },
  {
   "id": "arc",
@@ -152,7 +250,15 @@
   "top": 2626,
   "alt": 2280,
   "drv": 196,
-  "cam": "https://wtvpict.feratel.com/picture/38/15030.jpeg"
+  "cam": "https://wtvpict.feratel.com/picture/38/15030.jpeg",
+  "av": [
+   "AD-01"
+  ],
+  "rep": {
+   "src": "grandvalira",
+   "url": "https://www.ordinoarcalis.com/ca/estacio/estat-de-pistes"
+  },
+  "ots": "vallnord-arcalis"
  },
  {
   "id": "frm",
@@ -164,7 +270,15 @@
   "top": 2215,
   "alt": 1970,
   "drv": 145,
-  "cam": "https://s1.vision-environnement.com/live/modules/timelapse/captureptz/fontromeu.jpg"
+  "cam": "https://s1.vision-environnement.com/live/modules/timelapse/captureptz/fontromeu.jpg",
+  "av": [
+   "FR-73"
+  ],
+  "rep": {
+   "src": "altiservice",
+   "id": "font-romeu-pyrenees-2000"
+  },
+  "ots": "font-romeu-pyrenees-2000"
  },
  {
   "id": "ang",
@@ -176,7 +290,15 @@
   "top": 2358,
   "alt": 2000,
   "drv": 156,
-  "cam": "https://images.bergfex.at/webcams/?id=25066&format=44"
+  "cam": "https://images.bergfex.at/webcams/?id=25066&format=44",
+  "av": [
+   "FR-73"
+  ],
+  "rep": {
+   "src": "lumiplan",
+   "id": "les-angles"
+  },
+  "ots": "les-angles"
  },
  {
   "id": "for",
@@ -188,7 +310,15 @@
   "top": 2305,
   "alt": 2020,
   "drv": 170,
-  "cam": "https://images.bergfex.at/webcams/?id=25056&format=44"
+  "cam": "https://images.bergfex.at/webcams/?id=25056&format=44",
+  "av": [
+   "FR-73"
+  ],
+  "rep": {
+   "src": "lumiplan",
+   "id": "formigueres"
+  },
+  "ots": "formigueres"
  },
  {
   "id": "por",
@@ -200,7 +330,15 @@
   "top": 2474,
   "alt": 2050,
   "drv": 149,
-  "cam": "https://images.bergfex.at/webcams/?id=23722&format=44"
+  "cam": "https://images.bergfex.at/webcams/?id=23722&format=44",
+  "av": [
+   "FR-73"
+  ],
+  "rep": {
+   "src": "lumiplan",
+   "id": "porte-puymorens"
+  },
+  "ots": "porte-puymorens"
  },
  {
   "id": "cda",
@@ -212,7 +350,15 @@
   "top": 2377,
   "alt": 2000,
   "drv": 137,
-  "cam": "https://www.skiresort-service.com/typo3temp/_processed_/_cams_/webcam_73966.jpg"
+  "cam": "https://www.skiresort-service.com/typo3temp/_processed_/_cams_/webcam_73966.jpg",
+  "av": [
+   "FR-74"
+  ],
+  "rep": {
+   "src": "lumiplan",
+   "id": "le-cambre-daze"
+  },
+  "ots": "espace-cambre-daze-eyne"
  },
  {
   "id": "ax3",
@@ -224,7 +370,15 @@
   "top": 2345,
   "alt": 1860,
   "drv": 210,
-  "cam": "https://images.bergfex.at/webcams/?id=25064&format=44"
+  "cam": "https://images.bergfex.at/webcams/?id=25064&format=44",
+  "av": [
+   "FR-70"
+  ],
+  "rep": {
+   "src": "francemontagnes",
+   "id": "ax-3-domaines-statanmsm01090002"
+  },
+  "ots": "ax-3-domaines"
  },
  {
   "id": "guz",
@@ -235,7 +389,15 @@
   "base": 1103,
   "top": 2049,
   "alt": 1580,
-  "drv": 265
+  "drv": 265,
+  "av": [
+   "FR-69"
+  ],
+  "rep": {
+   "src": "ots",
+   "id": "pyrenees/guzet"
+  },
+  "ots": "guzet"
  },
  {
   "id": "sup",
@@ -246,7 +408,15 @@
   "base": 1463,
   "top": 2122,
   "alt": 1790,
-  "drv": 325
+  "drv": 325,
+  "av": [
+   "FR-68"
+  ],
+  "rep": {
+   "src": "ots",
+   "id": "pyrenees/luchon-superbagneres"
+  },
+  "ots": "luchon-superbagneres"
  },
  {
   "id": "pey",
@@ -258,7 +428,16 @@
   "top": 2360,
   "alt": 1870,
   "drv": 297,
-  "cam": "https://www.skiresort-service.com/typo3temp/_processed_/_cams_/webcam_62329.jpg"
+  "cam": "https://www.skiresort-service.com/typo3temp/_processed_/_cams_/webcam_62329.jpg",
+  "av": [
+   "FR-67",
+   "FR-68"
+  ],
+  "rep": {
+   "src": "lumiplan",
+   "id": "peyragudes"
+  },
+  "ots": "peyragudes"
  },
  {
   "id": "stl",
@@ -270,7 +449,15 @@
   "top": 2462,
   "alt": 2030,
   "drv": 277,
-  "cam": "https://www.skiresort-service.com/typo3temp/_processed_/_cams_/webcam_73407.jpg"
+  "cam": "https://www.skiresort-service.com/typo3temp/_processed_/_cams_/webcam_73407.jpg",
+  "av": [
+   "FR-67"
+  ],
+  "rep": {
+   "src": "altiservice",
+   "id": "saint-lary"
+  },
+  "ots": "saint-lary-soulan"
  },
  {
   "id": "pia",
@@ -282,7 +469,15 @@
   "top": 2526,
   "alt": 2140,
   "drv": 277,
-  "cam": "https://images.bergfex.at/webcams/?id=25048&format=44"
+  "cam": "https://images.bergfex.at/webcams/?id=25048&format=44",
+  "av": [
+   "FR-66"
+  ],
+  "rep": {
+   "src": "lumiplan",
+   "id": "piau"
+  },
+  "ots": "piau-engaly"
  },
  {
   "id": "tou",
@@ -294,6 +489,14 @@
   "top": 2464,
   "alt": 1960,
   "drv": 324,
-  "cam": "https://www.skiresort-service.com/typo3temp/_processed_/_cams_/webcam_49764.jpg"
+  "cam": "https://www.skiresort-service.com/typo3temp/_processed_/_cams_/webcam_49764.jpg",
+  "av": [
+   "FR-66"
+  ],
+  "rep": {
+   "src": "lumiplan",
+   "id": "grand-tourmalet"
+  },
+  "ots": "la-mongie-bareges"
  }
 ]

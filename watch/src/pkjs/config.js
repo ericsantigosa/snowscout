@@ -19,7 +19,8 @@ module.exports = function (resorts) {
           options: [
             { label: 'Next 72 h', value: '0' },
             { label: 'Fresh 48 h', value: '1' },
-            { label: 'Snow depth', value: '2' }
+            { label: 'Snow depth', value: '2' },
+            { label: 'Open slopes', value: '3' }
           ]
         }
       ]

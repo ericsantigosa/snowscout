@@ -4,7 +4,8 @@
 #define KEY_BLOB_LEN 1
 #define KEY_UPDATED 2
 #define KEY_DAY0 3
-#define KEY_BLOB_FIRST 10
+#define KEY_REC_SIZE 4       // a cache written with another record layout is ignored
+#define KEY_BLOB_FIRST 100   // up to MAX_RESORTS * REC_SIZE / PERSIST_DATA_MAX_LENGTH + 1 keys
 
 SnowData g_snow;
 static uint8_t s_blob[MAX_RESORTS * REC_SIZE];
@@ -37,6 +38,12 @@ static void parse(void) {
     for (int d = 0; d < DAYS; d++) {
       r->daily[d] = rd16(p + 36 + 2 * d);
     }
+    r->av = p[50] == NO_COUNT ? -1 : p[50];
+    r->rep = p[51];
+    memcpy(r->lifts, p + 52, 2);
+    memcpy(r->slopes, p + 54, 2);
+    memcpy(r->col, p + 56, COLOURS * 2);
+    r->opens = p[64] | (p[65] << 8);
   }
 }
 
@@ -57,6 +64,7 @@ static int chunk_len(int total, int off) {
 }
 
 void snow_save(void) {
+  persist_write_int(KEY_REC_SIZE, REC_SIZE);
   persist_write_int(KEY_BLOB_LEN, s_blob_len);
   persist_write_int(KEY_UPDATED, g_snow.updated);
   persist_write_int(KEY_DAY0, g_snow.day0);
@@ -67,7 +75,8 @@ void snow_save(void) {
 
 void snow_load(void) {
   int len = persist_read_int(KEY_BLOB_LEN);  // 0 when nothing is cached yet
-  if (len <= 0 || len > (int)sizeof(s_blob) || len % REC_SIZE != 0) {
+  if (persist_read_int(KEY_REC_SIZE) != REC_SIZE || len <= 0 || len > (int)sizeof(s_blob) ||
+      len % REC_SIZE != 0) {
     return;
   }
   for (int off = 0, key = KEY_BLOB_FIRST; off < len; off += PERSIST_DATA_MAX_LENGTH, key++) {
@@ -86,12 +95,19 @@ int16_t snow_value(const Resort *r, Board board) {
   switch (board) {
     case BOARD_FRESH48: return r->f48;
     case BOARD_DEPTH: return r->sd;
+    case BOARD_OPEN:
+      return r->rep == REP_OPEN && r->slopes[0] != NO_COUNT ? r->slopes[0] : NO_DATA;
     default: return r->c72;
   }
 }
 
+// Open slopes board: open resorts by slopes open, then closed ones by opening day, then no report
+static int open_rank(const Resort *r) {
+  return r->rep == REP_OPEN ? 0 : r->rep == REP_CLOSED ? 1 : 2;
+}
+
 const char *snow_board_title(Board board) {
-  static const char *titles[BOARD_COUNT] = {"Next 72 h", "Fresh 48 h", "Snow depth"};
+  static const char *titles[BOARD_COUNT] = {"Next 72 h", "Fresh 48 h", "Snow depth", "Open slopes"};
   return titles[board];
 }
 
@@ -121,6 +137,15 @@ int snow_find(const char *name) {
 static bool before(const Resort *a, const Resort *b, Board board) {
   if (a->favourite != b->favourite) {
     return a->favourite;
+  }
+  if (board == BOARD_OPEN) {
+    int ra = open_rank(a), rb = open_rank(b);
+    if (ra != rb) {
+      return ra < rb;
+    }
+    if (ra == 1 && a->opens != b->opens) {
+      return (a->opens ? a->opens : UINT16_MAX) < (b->opens ? b->opens : UINT16_MAX);
+    }
   }
   int16_t va = snow_value(a, board);
   int16_t vb = snow_value(b, board);

@@ -110,6 +110,87 @@ static void draw_resort(GContext *ctx, const Layer *cell, const Resort *r, bool 
   text(ctx, sub, FONT_KEY_GOTHIC_18, GRect(6, 24, b.size.w - 12, 22), GTextAlignmentLeft);
 }
 
+static GColor slope_colour(int c) {
+  switch (c) {
+    case 0: return GColorIslamicGreen;
+    case 1: return GColorBlue;
+    case 2: return GColorRed;
+    default: return GColorBlack;
+  }
+}
+
+// Open slopes board: "open/total" on the right, then a coloured square with open/total per
+// difficulty; closed resorts show their opening day instead.
+static void draw_open_row(GContext *ctx, const Layer *cell, const Resort *r, bool highlighted) {
+  GRect b = layer_get_bounds(cell);
+  char value[12], line[32];
+  if (r->rep == REP_OPEN && r->slopes[1] != NO_COUNT) {
+    snprintf(value, sizeof(value), "%d/%d", r->slopes[0], r->slopes[1]);
+  } else {
+    snprintf(value, sizeof(value), "%s", r->rep == REP_OPEN ? "open" : r->rep == REP_CLOSED ? "closed" : "-");
+  }
+  graphics_context_set_text_color(ctx, highlighted ? GColorWhite : GColorBlack);
+  text(ctx, r->name, FONT_KEY_GOTHIC_24_BOLD, GRect(6, -2, b.size.w - 84, 28), GTextAlignmentLeft);
+  text(ctx, value, FONT_KEY_GOTHIC_24_BOLD, GRect(b.size.w - 82, -2, 76, 28), GTextAlignmentRight);
+
+  bool colours = false;
+  for (int c = 0; c < COLOURS; c++) {
+    colours |= r->col[c][1] != NO_COUNT && r->col[c][1] > 0;
+  }
+  graphics_context_set_text_color(ctx, highlighted ? GColorWhite : GColorDarkGray);
+  if (r->rep == REP_OPEN && colours) {
+    // big resorts (e.g. "48/53" four times) do not fit in Gothic 18: measure, then fall back to 14
+    char counts[COLOURS][10];
+    GFont font = fonts_get_system_font(FONT_KEY_GOTHIC_18);
+    for (int pass = 0; pass < 2; pass++) {
+      int width = 0;
+      for (int c = 0; c < COLOURS; c++) {
+        counts[c][0] = '\0';
+        if (r->col[c][1] != NO_COUNT && r->col[c][1] > 0) {
+          snprintf(counts[c], sizeof(counts[c]), "%d/%d", r->col[c][0], r->col[c][1]);
+          width += 11 + graphics_text_layout_get_content_size(counts[c], font, GRect(0, 0, 80, 22),
+                                                               GTextOverflowModeTrailingEllipsis,
+                                                               GTextAlignmentLeft).w + 5;
+        }
+      }
+      if (width <= b.size.w - 8) {
+        break;
+      }
+      font = fonts_get_system_font(FONT_KEY_GOTHIC_14);
+    }
+    int x = 6;
+    for (int c = 0; c < COLOURS; c++) {
+      if (!counts[c][0]) {
+        continue;
+      }
+      graphics_context_set_fill_color(ctx, slope_colour(c));
+      graphics_fill_rect(ctx, GRect(x, 31, 9, 9), 1, GCornersAll);
+      if (highlighted) {
+        graphics_context_set_stroke_color(ctx, GColorWhite);
+        graphics_draw_rect(ctx, GRect(x - 1, 30, 11, 11));
+      }
+      GSize size = graphics_text_layout_get_content_size(counts[c], font, GRect(0, 0, 80, 22),
+                                                         GTextOverflowModeTrailingEllipsis, GTextAlignmentLeft);
+      graphics_draw_text(ctx, counts[c], font, GRect(x + 11, 23 + (22 - size.h) / 2 - 2, size.w + 2, 22),
+                         GTextOverflowModeTrailingEllipsis, GTextAlignmentLeft, NULL);
+      x += 11 + size.w + 5;
+    }
+    return;
+  }
+  int today = time(NULL) / SECONDS_PER_DAY;
+  if (r->rep == REP_CLOSED && r->opens > today) {
+    time_t noon = (time_t)r->opens * SECONDS_PER_DAY + SECONDS_PER_DAY / 2;
+    char day[16];
+    strftime(day, sizeof(day), "%a %d %b", localtime(&noon));
+    snprintf(line, sizeof(line), "opens %s", day);
+  } else if (r->rep == REP_OPEN && r->lifts[1] != NO_COUNT) {
+    snprintf(line, sizeof(line), "lifts %d/%d", r->lifts[0], r->lifts[1]);
+  } else {
+    snprintf(line, sizeof(line), "%s", r->rep == REP_NONE ? "no official report" : "");
+  }
+  text(ctx, line, FONT_KEY_GOTHIC_18, GRect(6, 24, b.size.w - 12, 22), GTextAlignmentLeft);
+}
+
 static uint16_t get_num_sections(MenuLayer *menu, void *ctx) {
   return g_snow.fav_count ? 3 : 2;
 }
@@ -137,6 +218,8 @@ static void draw_row(GContext *ctx, const Layer *cell, MenuIndex *index, void *d
   bool highlighted = menu_cell_layer_is_highlighted(cell);
   if (index->section == 0) {
     draw_board_header(ctx, cell, highlighted);
+  } else if (g_snow.board == BOARD_OPEN) {
+    draw_open_row(ctx, cell, &g_snow.resorts[g_snow.order[row_pos(index)]], highlighted);
   } else {
     draw_resort(ctx, cell, &g_snow.resorts[g_snow.order[row_pos(index)]], highlighted);
   }

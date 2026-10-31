@@ -12,11 +12,15 @@ built for a Pebble Time 2.
   message per storm (thresholds in `backend/config.json`).
 - `history/YYYY-MM-DD.json` on the `gh-pages` branch keeps the per-model numbers for later
   model checks.
+- `backend/reports.py` adds each resort's official snow report (open/closed, lifts and slopes
+  open, per difficulty colour where the source has it, opening date) and `backend/avalanche.py`
+  the day's avalanche danger. Both are best-effort: a failing source is logged and skipped.
 
 ## data.json
 
 ```
-{ "v": 1, "t": <unix time>, "d0": <unix local midnight of day 0>, "m": [models],
+{ "v": 1, "t": <unix time>, "d0": <unix local midnight of day 0>, "avd": <avalanche bulletin day>,
+  "m": [models],
   "r": [ { "id", "n", "reg", "alt", "drv",
            "f48",            fallen in the last 48 h (cm)
            "c72", "lo", "hi" forecast next 72 h: median and model range (cm)
@@ -24,7 +28,12 @@ built for a Pebble Time 2.
            "d": [7],         daily totals, today first (cm)
            "sd",             modelled snow depth (cm)
            "tmin", "fl",     min temp next 24 h (°C), freezing level now (m)
-           "cam" } ] }       webcam still URL or null (fetched by the phone, never re-hosted)
+           "cam",            webcam still URL or null (fetched by the phone, never re-hosted)
+           "av",             avalanche danger 1-5 for the resort's region(s), 0 = no snow, null = no bulletin
+           "rep": { "src", "open", "date",
+                    "lifts", "slopes", "km": [open, total],
+                    "col": { "g"|"b"|"r"|"k": [open, total] },   green/blue/red/black slopes
+                    "depth": [base, top], "new" (cm, 24 h), "opens" (YYYY-MM-DD) } } ] }
 ```
 
 ## Local use
@@ -46,12 +55,14 @@ at a full CA bundle, e.g. Git's: `SSL_CERT_FILE="C:/Program Files/Git/mingw64/et
 ## Watch app (`watch/`)
 
 Pebble Time 2 (`emery`) watchapp. The phone side (`src/pkjs`) fetches `data.json`, packs it into
-one 50-byte-per-resort blob and sends it to the watch, which caches it in persistent storage.
+one 66-byte-per-resort blob and sends it to the watch, which caches it in persistent storage.
 
-- **Boards**: Next 72 h · Fresh 48 h · Snow depth. Select on the header row (or a long press
-  anywhere) switches board.
+- **Boards**: Next 72 h · Fresh 48 h · Snow depth · Open slopes. Select on the header row (or a
+  long press anywhere) switches board. Open slopes lists open resorts by slopes open with
+  open/total per colour, then closed resorts by opening day.
 - **Detail**: Select on a resort shows 7-day snowfall bars, the 72 h model range, depth,
-  min temperature and freezing level; Up/Down step through the board.
+  min temperature and freezing level, an avalanche danger badge (European colours) and a cam
+  tag; Up/Down step through the board.
 - **Settings** (gear in the Pebble phone app, built with Clay): first board, favourites (pinned
   on top), hidden resorts.
 
@@ -79,3 +90,14 @@ cd watchface && pebble build && pebble install build/watchface.pbw --adb
 Weather data by [Open-Meteo.com](https://open-meteo.com/) (CC BY 4.0). Resort areas and
 altitudes from [OpenSkiMap](https://openskimap.org/) / © OpenStreetMap contributors (ODbL),
 via `tools/build_resorts.py`. Drive times from the OSRM demo server.
+
+Avalanche danger: the [EAWS](https://www.avalanches.org/) combined ratings
+(static.avalanche.report), from the services that issue the bulletins: Institut Cartogràfic i
+Geològic de Catalunya (ICGC, also queried directly), Centre de Lauegi d'Aran, Servei Meteorològic
+Nacional d'Andorra and Météo-France. Region polygons: EAWS micro-regions (CC0). The bulletin day
+is in `data.json` as `avd`.
+
+Snow reports: FGC (pirineu365.cat), the resorts' Lumiplan bulletins, Grandvalira Resorts,
+Altiservice, France Montagnes and OnTheSnow (opening dates, 24 h snow, and slopes per level for
+resorts without an official per-colour source). Personal, non-commercial use; one request per
+source per day.

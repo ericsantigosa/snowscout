@@ -24,7 +24,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))  # sibling modules, also when run with python -I
+import avalanche  # noqa: E402
+import reports  # noqa: E402
+
 API = "https://api.open-meteo.com/v1/forecast"
+USER_AGENT = "Mozilla/5.0 (compatible; Snowscout/0.1; +https://github.com/ericsantigosa/snowscout)"
 HOURLY = ["snowfall", "snow_depth", "temperature_2m", "freezing_level_height"]
 WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
@@ -56,12 +61,12 @@ def load_env(path):
             os.environ.setdefault(key.strip(), value.strip())
 
 
-def http_json(url, data=None, tries=3):
+def http_text(url, data=None, tries=3):
     for attempt in range(tries):
         try:
-            req = urllib.request.Request(url, data=data, headers={"User-Agent": "snowscout/0.1"})
+            req = urllib.request.Request(url, data=data, headers={"User-Agent": USER_AGENT})
             with urllib.request.urlopen(req, timeout=60) as resp:
-                return json.load(resp)
+                return resp.read().decode(resp.headers.get_content_charset() or "utf-8", errors="replace")
         except urllib.error.HTTPError as exc:
             if exc.code < 500 or attempt == tries - 1:
                 raise
@@ -71,6 +76,10 @@ def http_json(url, data=None, tries=3):
                 raise
             print(f"retrying after {exc}", file=sys.stderr)
         time.sleep(5 * (attempt + 1))
+
+
+def http_json(url, data=None, tries=3):
+    return json.loads(http_text(url, data, tries))
 
 
 def fetch_forecast(resorts, models):
@@ -296,9 +305,21 @@ def main():
         rows.append(row)
         archive[resort["id"]] = per
 
+    # extras: official snow reports and avalanche danger; never let them stop the forecast
+    day = avalanche.today_local(now, off)
+    try:
+        reps = reports.collect(resorts, lambda url: http_text(url, tries=2))
+        levels = avalanche.levels(resorts, day, lambda url: http_text(url, tries=2))
+    except Exception as exc:
+        print(f"reports/avalanche skipped: {exc!r}")
+        reps, levels = {}, {}
+    for row in rows:
+        row["rep"] = reps.get(row["id"])
+        row["av"] = levels.get(row["id"])
+
     day0 = now - (now + off) % 86400
-    save_json(a.out / "data.json", {"v": 1, "t": now, "d0": day0, "m": cfg["models"], "r": rows},
-              compact=True)
+    save_json(a.out / "data.json", {"v": 1, "t": now, "d0": day0, "avd": day.isoformat(),
+                                    "m": cfg["models"], "r": rows}, compact=True)
     date = datetime.fromtimestamp(now + off, timezone.utc).strftime("%Y-%m-%d")
     save_json(a.out / "history" / f"{date}.json", {"t": now, "r": archive}, compact=True)
     print_table(rows)
