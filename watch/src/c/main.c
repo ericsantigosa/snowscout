@@ -4,7 +4,7 @@
 #include "detail.h"
 
 #define KEY_BOARD 20             // persisted first board (set from the phone settings page)
-#define STALE_AFTER (6 * SECONDS_PER_HOUR)
+#define STALE_AFTER (30 * SECONDS_PER_HOUR)  // the backend runs once a day
 #define HEADER_ROW_H 52
 #define RESORT_ROW_H 50
 

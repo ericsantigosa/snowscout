@@ -236,6 +236,12 @@ def telegram(method, token, **params):
 
 # ---------------------------------------------------------------- main
 
+def fresh_enough(data_path, now, hours):
+    """True when data_path holds a data.json written less than `hours` before `now`."""
+    data = load_json(data_path)
+    return bool(data) and now - data.get("t", 0) < hours * 3600
+
+
 def print_table(rows):
     print(f"{'resort':14} {'72h':>4} {'range':>9} {'24h':>4} {'48h ago':>7} {'depth':>5} {'fl':>5}  daily")
     for r in sorted(rows, key=lambda r: -(r["c72"] or 0)):
@@ -249,6 +255,8 @@ def main():
     ap.add_argument("--out", type=Path, default=HERE.parent / "site")
     ap.add_argument("--dry-run", action="store_true", help="print the alert instead of sending it")
     ap.add_argument("--now", type=int, help="override the current unix time (testing)")
+    ap.add_argument("--skip-if-newer", type=float, metavar="HOURS",
+                    help="do nothing if the existing data.json is younger than this (backup runs)")
     ap.add_argument("--telegram-chat-id", action="store_true", help="list chats that messaged the bot")
     ap.add_argument("--telegram-test", action="store_true", help="send a test message")
     a = ap.parse_args()
@@ -272,9 +280,13 @@ def main():
             print("sent")
         return
 
+    now = a.now or int(time.time())
+    if a.skip_if_newer is not None and fresh_enough(a.out / "data.json", now, a.skip_if_newer):
+        print(f"data.json is younger than {a.skip_if_newer} h: nothing to do")
+        return
+
     cfg = load_json(HERE / "config.json")
     resorts = load_json(HERE / "resorts.json")
-    now = a.now or int(time.time())
     locs = fetch_forecast(resorts, cfg["models"])
     off = locs[0]["utc_offset_seconds"]
 

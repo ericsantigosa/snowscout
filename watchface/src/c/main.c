@@ -5,8 +5,8 @@
 
 #define KEY_SUMMARY 1
 #define DAYS 7
-#define STALE_AFTER (6 * SECONDS_PER_HOUR)
-#define REFRESH_EVERY (30 * SECONDS_PER_MINUTE)
+#define STALE_AFTER (30 * SECONDS_PER_HOUR)  // the backend runs once a day
+#define REFRESH_EVERY (2 * SECONDS_PER_HOUR)
 #define BAND_H 90
 #define LABEL_H 16
 
@@ -144,7 +144,7 @@ static void inbox_received(DictionaryIterator *iter, void *ctx) {
   copy_string(s_sum.line_a, sizeof(s_sum.line_a), dict_find(iter, MESSAGE_KEY_LINE_A));
   copy_string(s_sum.line_b, sizeof(s_sum.line_b), dict_find(iter, MESSAGE_KEY_LINE_B));
   persist_write_data(KEY_SUMMARY, &s_sum, sizeof(s_sum));
-  s_last_request = time(NULL);  // the phone just fetched; the next refresh is due in 30 min
+  s_last_request = time(NULL);  // the phone just fetched; the next refresh is due in 2 h
   layer_mark_dirty(s_canvas);
 }
 

@@ -3,7 +3,9 @@
 Snowfall rankings and alerts for Pyrenees ski resorts (Catalonia, Andorra, French Pyrenees),
 built for a Pebble Time 2.
 
-- `backend/snowscout.py` runs every 2 h on GitHub Actions. It pulls hourly snowfall from five
+- `backend/snowscout.py` runs once a day on GitHub Actions (06:23 UTC, with backup slots at
+  07:53 and 09:23 that skip if the morning run happened; GitHub drops some scheduled runs).
+  It pulls hourly snowfall from five
   Open-Meteo models (ECMWF IFS, ICON, Météo-France, GFS, UKMO) at each resort's mid-mountain
   altitude, takes the model median, and publishes `data.json` to GitHub Pages.
 - When the median forecast reaches ≥20 cm in 24 h or ≥40 cm in 72 h, it sends one Telegram
@@ -65,8 +67,8 @@ pebble install build/watch.pbw --emulator emery --vnc
 
 Time and date over a 7-day strip of the biggest daily snowfall at any resort (today
 highlighted), the 72 h leader, and the first day with 10 cm or more somewhere. The phone side
-sends a small summary when the face starts and every 30 minutes; the bottom line turns into a
-red "data N h old" warning when the backend data is more than 6 h old.
+sends a small summary when the face starts and every 2 hours; the bottom line turns into a
+red "data N h old" warning when the backend data is more than 30 h old (one missed day).
 
 ```
 cd watchface && pebble build && pebble install build/watchface.pbw --adb

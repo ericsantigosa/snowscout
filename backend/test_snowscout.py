@@ -102,5 +102,18 @@ class AlertTest(unittest.TestCase):
         self.assertEqual(lines[3], "+1 more")
 
 
+class FreshEnoughTest(unittest.TestCase):
+    def test_fresh_enough(self):
+        import json
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / "data.json"
+            self.assertFalse(s.fresh_enough(path, NOW, 12))       # no file yet
+            path.write_text(json.dumps({"t": NOW - 3 * 3600}))
+            self.assertTrue(s.fresh_enough(path, NOW, 12))
+            self.assertFalse(s.fresh_enough(path, NOW, 2))
+
+
 if __name__ == "__main__":
     unittest.main()
