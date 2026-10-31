@@ -8,7 +8,8 @@
   "base": 1504,
   "top": 2600,
   "alt": 2050,
-  "drv": 242
+  "drv": 242,
+  "cam": "https://app.projecte4estacions.com/snapshots/peulla.jpg"
  },
  {
   "id": "boi",
@@ -19,7 +20,8 @@
   "base": 2039,
   "top": 2747,
   "alt": 2390,
-  "drv": 226
+  "drv": 226,
+  "cam": "https://app.projecte4estacions.com/snapshots/boi-taull-mulleres.jpg"
  },
  {
   "id": "pai",
@@ -30,7 +32,8 @@
   "base": 1680,
   "top": 2424,
   "alt": 2050,
-  "drv": 217
+  "drv": 217,
+  "cam": "https://media.turismefgc.cat/portaine/port-aine-hd.jpg"
  },
  {
   "id": "esp",
@@ -41,7 +44,8 @@
   "base": 1511,
   "top": 2290,
   "alt": 1900,
-  "drv": 226
+  "drv": 226,
+  "cam": "https://media.turismefgc.cat/espot/espot-esqui-hd.jpg"
  },
  {
   "id": "tav",
@@ -63,7 +67,8 @@
   "base": 1744,
   "top": 2122,
   "alt": 1930,
-  "drv": 112
+  "drv": 112,
+  "cam": "https://app.projecte4estacions.com/snapshots/portdelcomte1.jpg"
  },
  {
   "id": "mol",
@@ -74,7 +79,8 @@
   "base": 1653,
   "top": 2518,
   "alt": 2090,
-  "drv": 117
+  "drv": 117,
+  "cam": "https://media.turismefgc.cat/lamolina/plcomercial.jpg"
  },
  {
   "id": "mas",
@@ -85,7 +91,8 @@
   "base": 1615,
   "top": 2509,
   "alt": 2060,
-  "drv": 114
+  "drv": 114,
+  "cam": "https://www.masella.com/cam1/mini/tosa2500tmp.jpg"
  },
  {
   "id": "vlt",
@@ -96,7 +103,8 @@
   "base": 2010,
   "top": 2495,
   "alt": 2250,
-  "drv": 143
+  "drv": 143,
+  "cam": "https://storage.roundshot.com/5ee24085e2f5c2.07690483/vallter-2000-1920x1080.jpg"
  },
  {
   "id": "nur",
@@ -107,7 +115,8 @@
   "base": 1964,
   "top": 2259,
   "alt": 2110,
-  "drv": 153
+  "drv": 153,
+  "cam": "https://media.turismefgc.cat/valldenuria/nuriabarques.jpg"
  },
  {
   "id": "gv",
@@ -118,7 +127,8 @@
   "base": 1674,
   "top": 2619,
   "alt": 2150,
-  "drv": 195
+  "drv": 195,
+  "cam": "https://wtvpict.feratel.com/picture/38/15060.jpeg"
  },
  {
   "id": "pal",
@@ -129,7 +139,8 @@
   "base": 1554,
   "top": 2541,
   "alt": 2050,
-  "drv": 168
+  "drv": 168,
+  "cam": "https://wtvpict.feratel.com/picture/38/15085.jpeg"
  },
  {
   "id": "arc",
@@ -140,7 +151,8 @@
   "base": 1943,
   "top": 2626,
   "alt": 2280,
-  "drv": 196
+  "drv": 196,
+  "cam": "https://wtvpict.feratel.com/picture/38/15030.jpeg"
  },
  {
   "id": "frm",
@@ -151,7 +163,8 @@
   "base": 1716,
   "top": 2215,
   "alt": 1970,
-  "drv": 145
+  "drv": 145,
+  "cam": "https://s1.vision-environnement.com/live/modules/timelapse/captureptz/fontromeu.jpg"
  },
  {
   "id": "ang",
@@ -162,7 +175,8 @@
   "base": 1635,
   "top": 2358,
   "alt": 2000,
-  "drv": 156
+  "drv": 156,
+  "cam": "https://images.bergfex.at/webcams/?id=25066&format=44"
  },
  {
   "id": "for",
@@ -173,7 +187,8 @@
   "base": 1738,
   "top": 2305,
   "alt": 2020,
-  "drv": 170
+  "drv": 170,
+  "cam": "https://images.bergfex.at/webcams/?id=25056&format=44"
  },
  {
   "id": "por",
@@ -184,7 +199,8 @@
   "base": 1621,
   "top": 2474,
   "alt": 2050,
-  "drv": 149
+  "drv": 149,
+  "cam": "https://images.bergfex.at/webcams/?id=23722&format=44"
  },
  {
   "id": "cda",
@@ -195,7 +211,8 @@
   "base": 1631,
   "top": 2377,
   "alt": 2000,
-  "drv": 137
+  "drv": 137,
+  "cam": "https://www.skiresort-service.com/typo3temp/_processed_/_cams_/webcam_73966.jpg"
  },
  {
   "id": "ax3",
@@ -206,7 +223,8 @@
   "base": 1376,
   "top": 2345,
   "alt": 1860,
-  "drv": 210
+  "drv": 210,
+  "cam": "https://images.bergfex.at/webcams/?id=25064&format=44"
  },
  {
   "id": "guz",
@@ -239,7 +257,8 @@
   "base": 1389,
   "top": 2360,
   "alt": 1870,
-  "drv": 297
+  "drv": 297,
+  "cam": "https://www.skiresort-service.com/typo3temp/_processed_/_cams_/webcam_62329.jpg"
  },
  {
   "id": "stl",
@@ -250,7 +269,8 @@
   "base": 1595,
   "top": 2462,
   "alt": 2030,
-  "drv": 277
+  "drv": 277,
+  "cam": "https://www.skiresort-service.com/typo3temp/_processed_/_cams_/webcam_73407.jpg"
  },
  {
   "id": "pia",
@@ -261,7 +281,8 @@
   "base": 1762,
   "top": 2526,
   "alt": 2140,
-  "drv": 277
+  "drv": 277,
+  "cam": "https://images.bergfex.at/webcams/?id=25048&format=44"
  },
  {
   "id": "tou",
@@ -272,6 +293,7 @@
   "base": 1459,
   "top": 2464,
   "alt": 1960,
-  "drv": 324
+  "drv": 324,
+  "cam": "https://www.skiresort-service.com/typo3temp/_processed_/_cams_/webcam_49764.jpg"
  }
 ]

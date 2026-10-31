@@ -6,6 +6,47 @@ var decodeJpeg = require('./vendor/jpeg-decoder');
 var LEVEL = [0, 85, 170, 255];
 var MAX_SAMPLES = 8;  // per axis per output pixel; enough for an average, keeps huge images fast
 
+// Some cameras (the FGC ones) leave zero bytes between header segments. Browsers skip them
+// ("extraneous bytes before marker"); jpeg-js stops, so cut them out before decoding.
+function dropPadding(bytes) {
+  var parts = [];
+  var start = 0;
+  var i = 2;  // after SOI
+  while (i + 3 < bytes.length) {
+    if (bytes[i] !== 0xFF) {
+      var j = i;
+      while (j < bytes.length && bytes[j] !== 0xFF) {
+        j++;
+      }
+      parts.push(bytes.subarray(start, i));
+      start = i = j;
+      continue;
+    }
+    var marker = bytes[i + 1];
+    if (marker === 0xDA || marker === 0xD9) {
+      break;  // start of scan: the entropy-coded data follows, leave it alone
+    }
+    if (marker === 0xFF) {
+      i++;  // fill byte before a marker
+      continue;
+    }
+    i += 2 + ((bytes[i + 2] << 8) | bytes[i + 3]);
+  }
+  if (!parts.length) {
+    return bytes;
+  }
+  parts.push(bytes.subarray(start));
+  var total = 0;
+  parts.forEach(function (p) { total += p.length; });
+  var out = new Uint8Array(total);
+  var o = 0;
+  parts.forEach(function (p) {
+    out.set(p, o);
+    o += p.length;
+  });
+  return out;
+}
+
 function bin(r, g, b) {  // index of the nearest Pebble colour, 0brrggbb
   return (Math.round(r / 85) << 4) | (Math.round(g / 85) << 2) | Math.round(b / 85);
 }
@@ -132,7 +173,8 @@ function pack(idx, w, h) {
 // jpeg: ArrayBuffer or Uint8Array of a JPEG file. Returns {width, height, palette: [GColor8],
 // data: Uint8Array (4 bpp rows of ceil(width / 2) bytes), indices: Uint8Array}
 function convert(jpeg, width, height) {
-  var raw = decodeJpeg(new Uint8Array(jpeg), { useTArray: true, formatAsRGBA: true, maxResolutionInMP: 40 });
+  var raw = decodeJpeg(dropPadding(new Uint8Array(jpeg)),
+                       { useTArray: true, formatAsRGBA: true, maxResolutionInMP: 40 });
   var img = downscale(raw.data, raw.width, raw.height, width, height);
   var palette = choosePalette(img, 16);
   var idx = dither(img, width, height, palette);

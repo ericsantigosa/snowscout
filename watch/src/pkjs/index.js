@@ -148,11 +148,16 @@ function fetchCam(index) {
     if (xhr.status !== 200 || !xhr.response) {
       return camError('HTTP ' + xhr.status);
     }
+    // dead cameras still answer 200: a tiny PNG, an empty file, or an HTML page
+    var type = xhr.getResponseHeader('Content-Type') || '';
+    if (xhr.response.byteLength < 2048 || (type && type.indexOf('jpeg') < 0)) {
+      return camError('camera offline');
+    }
     var img;
     try {
       img = cam.convert(xhr.response, CAM_W, CAM_H);
     } catch (e) {
-      return camError('not a JPEG');
+      return camError('camera offline');
     }
     var modified = Date.parse(xhr.getResponseHeader('Last-Modified') || '');
     sendCam(id, img, isNaN(modified) ? 0 : Math.round(modified / 1000));
